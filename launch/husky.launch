@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<launch>
+  <param name="/use_sim_time" value="false"/>
+
+  <!-- Path to MH_03 bag -->
+  <arg name="mh_03_bag" default="/home/jvjohnson/Downloads/husky-indoor.bag"/>
+
+  <!-- Path to MH_03 kalibr calibration -->
+  <arg name="kalibr_yaml" default="$(find msckf_mono)/euroc/husky.yaml"/>
+
+  <group ns="msckf">
+    <param name="stand_still_time" value="5.0"/>
+    
+    <rosparam command="load" file="$(arg kalibr_yaml)"/>
+    <param name="kalibr_camera_name" value="cam0"/>
+
+
+    <param name="feature_cov" value="3.0"/>
+
+    <param name="imu_vars/w_var" value="1e-8"/>
+    <param name="imu_vars/dbg_var" value="3.6733e-9"/>
+    <param name="imu_vars/a_var" value="1e-8"/>
+    <param name="imu_vars/dba_var" value="7e-7"/>
+
+    <param name="imu_covars/p_init" value="1e-16"/>
+    <param name="imu_covars/q_init" value="1e-9"/>
+    <param name="imu_covars/v_init" value="1e-6"/>
+    <param name="imu_covars/ba_init" value="1e-6"/>
+    <param name="imu_covars/bg_init" value="1e-6"/>
+
+    <param name="max_gn_cost_norm" value="8"/>
+    <param name="translation_threshold" value="0.008"/>
+
+    <param name="keyframe_transl_dist" value="0.010"/>
+    <param name="keyframe_rot_dist" value="0.010"/>
+
+    <param name="min_track_length" value="3"/>
+    <param name="max_track_length" value="60"/>
+    <param name="max_cam_states" value="30"/>
+
+    <param name="ransac_threshold" value="2.0e-7"/>
+
+    <param name="n_grid_rows" value="16"/>
+    <param name="n_grid_cols" value="16"/>
+
+    <node pkg="msckf_mono" name="msckf_mono_node" type="msckf_mono_node">
+      <remap from="imu" to="/pirvs/imu"/>
+      <remap from="image_mono" to="/pirvs/left/image_raw"/>
+    </node>
+    
+    <node pkg="msckf_mono" name="OdomToPath" type="OdomToPath.py" output="screen" />
+  </group>
+  <node name="republish" type="republish" pkg="image_transport" output="screen" args="compressed in:=/pirvs/left/image_raw raw out:=/pirvs/left/image_raw " />
+
+  <node pkg="rosbag" type="play" name="playback" args="-s 40.0 $(arg mh_03_bag)" output="screen"/>
+
+  <node pkg="rviz" name="msckf_rviz" type="rviz" args="-d $(find msckf_mono)/euroc/rviz.rviz"/>
+
+</launch>

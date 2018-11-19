@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <launch>
-  <arg name="gdb_debug" default="false"/>
+  <arg name="gdb_debug" default="true"/>
   <arg name="profile" default="false"/>
 
-  <arg name="data_set_path" default="/home/jvjohnson/Downloads/MH_01/mav0"/>
-  <arg name="stand_still_start" default="1403636602563555584."/>
-  <arg name="stand_still_end"   default="1403636622513555456."/>
+  <arg name="data_set_path" default="/home/jvjohnson/Downloads/Tum_VI_Corridor4/mav0"/>
+  <arg name="stand_still_start" default="1520621175986840704."/>
+  <arg name="stand_still_end"   default="1520621178737005459."/>
 
   <group ns="msckf">
     <param name="data_set_path" value="$(arg data_set_path)"/>

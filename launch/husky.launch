@@ -3,7 +3,7 @@
   <param name="/use_sim_time" value="false"/>
 
   <!-- Path to MH_03 bag -->
-  <arg name="mh_03_bag" default="/home/jvjohnson/Downloads/husky-indoor.bag"/>
+  <arg name="mh_03_bag" default="/home/alanhernandez/Downloads/HuskyDataset/husky-indoor.bag"/>
 
   <!-- Path to MH_03 kalibr calibration -->
   <arg name="kalibr_yaml" default="$(find msckf_mono)/euroc/husky.yaml"/>
@@ -32,7 +32,7 @@
     <param name="translation_threshold" value="0.008"/>
 
     <param name="keyframe_transl_dist" value="0.010"/>
-    <param name="keyframe_rot_dist" value="0.010"/>
+    <param name="keyframe_rot_dist" value="0.050"/>
 
     <param name="min_track_length" value="3"/>
     <param name="max_track_length" value="60"/>
@@ -48,12 +48,14 @@
       <remap from="image_mono" to="/pirvs/left/image_raw"/>
     </node>
     
+    <!-- Node Created in AFRL, Adds path to Rviz Visualizer -->
     <node pkg="msckf_mono" name="OdomToPath" type="OdomToPath.py" output="screen" />
   </group>
   <node name="republish" type="republish" pkg="image_transport" output="screen" args="compressed in:=/pirvs/left/image_raw raw out:=/pirvs/left/image_raw " />
 
   <node pkg="rosbag" type="play" name="playback" args="-s 40.0 $(arg mh_03_bag)" output="screen"/>
 
+  <!-- Rviz visualizer -->
   <node pkg="rviz" name="msckf_rviz" type="rviz" args="-d $(find msckf_mono)/euroc/rviz.rviz"/>
 
 </launch>

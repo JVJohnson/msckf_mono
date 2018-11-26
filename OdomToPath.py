@@ -45,7 +45,7 @@ def writePath():
 
     '''
     global pathMsg
-    with open('/home/jvjohnson/Documents/msckf_poses.csv', 'w') as csvFile:
+    with open('~/Documents/msckf_poses.csv', 'w') as csvFile:
         Wrt = csv.writer(csvFile, delimiter=',')
         Wrt.writerow(['timestamp (nS)', 'pos_x', 'pos_y', 'pos_z', 'quat_w', 'quat_x', 'quat_y', 'quat_z' ])
         # print(pathMsg)
